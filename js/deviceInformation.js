@@ -1,91 +1,85 @@
-$(function(){
-	init();
+$(function () {
+  init();
 });
 var cn = {
-    "fail": "Ê§°Ü",
-    "pass": "³É¹¦"
-   
+  Fail: "Ê§ï¿½ï¿½",
+  Success: "ï¿½É¹ï¿½",
 };
 
 var en = {
-    "fail": "Fail",
-    "pass": "Success"
-    
-
+  Fail: "Fail",
+  Success: "Success",
 };
 function get_lan_device(m) {
-    //»ñÈ¡ÎÄ×Ö
-    var lan = getCookie('language');     //ÓïÑÔ°æ±¾
-    //Ñ¡È¡ÓïÑÔÎÄ×Ö
-    switch (lan) {
-        case 'Chinese':
-            var t = cn[m];
-            break;
-        default:
-            var t = en[m];
-    }
+  //ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
+  var lan = getCookie("language"); //ï¿½ï¿½ï¿½Ô°æ±¾
+  //Ñ¡È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  switch (lan) {
+    case "Chinese":
+      var t = cn[m];
+      break;
+    default:
+      var t = en[m];
+  }
 
-    //Èç¹ûËùÑ¡ÓïÑÔµÄjsonÖÐÃ»ÓÐ´ËÄÚÈÝ¾ÍÑ¡È¡ÆäËûÓïÑÔÏÔÊ¾
-    if (t == undefined) t = cn[m];
-    if (t == undefined) t = en[m];
+  //ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½Ôµï¿½jsonï¿½ï¿½Ã»ï¿½Ð´ï¿½ï¿½ï¿½ï¿½Ý¾ï¿½Ñ¡È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾
+  if (t == undefined) t = cn[m];
+  if (t == undefined) t = en[m];
 
+  if (t == undefined) t = m; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Ð¾Í·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½Ê¶
 
-    if (t == undefined) t = m; //Èç¹û»¹ÊÇÃ»ÓÐ¾Í·µ»ØËûµÄ±êÊ¶
-
-    return t;
+  return t;
 }
 function init() {
+  var param = { funcNo: 1029 };
+  request(param, function (data) {
+    var flag = data.flag;
+    var error_info = data.error_info;
 
-    var param = { funcNo: 1029 };
-    request(param, function(data) {
-        var flag = data.flag;
-        var error_info = data.error_info;
+    if (flag == "1") {
+      //ï¿½ï¿½È·
+      var result = data.results[0];
+      //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-        if (flag == "1") {//ÕýÈ·
-            var result = data.results[0];
-            //±£´æÐèÒªµÄÊý¾Ý
-            
-            $("#imei").val(result.imei);
-            $("#FWversion").html(result.fwversion);
-            $("#manufacturer").html(result.manufacture);
-            $("#dbmSignal").html(result.dbm);
-                 
-        } else {//´íÎó
-            Alert(error_info);
-        }
-    });
-   
-	//$("#imei").html($.session.get("imei"));
-	//$("#FWversion").html($.session.get("fwversion"));
+      $("#imei").val(result.imei);
+      $("#FWversion").html(result.fwversion);
+      $("#manufacturer").html(result.manufacture);
+      $("#dbmSignal").html(result.dbm);
+    } else {
+      //ï¿½ï¿½ï¿½ï¿½
+      Alert(error_info);
+    }
+  });
+
+  //$("#imei").html($.session.get("imei"));
+  //$("#FWversion").html($.session.get("fwversion"));
 }
 
-$("#apply").bind('click', function(e) {
+$("#apply").bind("click", function (e) {
+  var nImei = $("#imei").val();
 
-    var nImei = $("#imei").val();
-  
-//    var reg = /^[0-9]$/;
+  // var reg = /^[0-9]$/;
 
-//    if (!reg.test(nImei)) {
-//        Alert("Invalid IMEI!");
-//        return;
-//    }
+  // if (!reg.test(nImei)) {
+  //   Alert("Invalid IMEI!");
+  //   return;
+  // }
 
-    var param = { "funcNo": 2002,
-         "imei": nImei
-     
-    };
-    request(param, function(data) {
-        var flag = data.flag;
-        var error_info = data.error_info;
+  var param = { funcNo: 2002, imei: nImei };
+  request(param, function (data) {
+    var flag = data.flag;
+    var error_info = data.error_info;
 
-        if (flag == "1") {//ÕýÈ·
+    if (flag == "1") {
+      //ï¿½ï¿½È·
 
-            Alert(get_lan_device('pass'));
-            return;
-        } else {//´íÎó
-            Alert(get_lan_device('fail'));
-			return;
-        }
-        //location.reload(true);
-    });
+      Alert(get_lan_device("Success"));
+      return;
+    } else {
+      //ï¿½ï¿½ï¿½ï¿½
+      Alert(get_lan_device("Fail"));
+      return;
+    }
+    //location.reload(true);
+  });
 });
