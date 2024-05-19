@@ -61,3 +61,12 @@ sudo exportfs -v
 sudo ufw allow from $ip_prefix.0/24 to any port nfs
 sudo ufw status
 echo "Done."
+
+
+
+
+
+# Web
+wget https://github.com/AlienWolfX/mifi_webui/blob/main/IT112.zip
+sudo mkdir -p /var/www/web
+sudo unzip IT112.zip -d /var/www/web
