@@ -12,12 +12,17 @@ sudo apt-get update && sudo apt-get upgrade -y
 
 # Lab 1: Installing Apache2
 sudo apt install apache2 -y
-sudo systemctl status apache2
-sleep 4
+if sudo systemctl status apache2 | grep -q 'running'; then
+    echo "yes"
+else
+    echo "no"
+fi
+sleep 2
 
 # Lab 2: 
 sudo apt install openssh-server -y
 sudo systemctl restart sshd.service
+sleep 2
 
 # Lab 3:
 sudo apt install nfs-kernel-server
@@ -52,3 +57,4 @@ sudo apt install nfs-kernel-server
     # Firewall
     sudo ufw allow from 192.168.$third.0/24 to any port nfs
     sudo ufw status
+    echo "Done."
