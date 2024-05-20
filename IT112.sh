@@ -14,9 +14,9 @@ sudo apt-get update && sudo apt-get upgrade -y
 # Lab 1: Installing Apache2
 sudo apt install apache2 -y
 if sudo systemctl status apache2 | grep -q 'running'; then
-    echo "Apache2 is running"
+    echo -e "\e[32mApache2 is running\e[0m"
 else
-    echo "Apache2 is not running"
+    echo -e "\e[31mApache2 is not running\e[0m"
     exit 1
 fi
 sleep 2
@@ -41,18 +41,20 @@ sudo mount --bind /var/www /srv/nfs4/www
 echo "/opt/backups /srv/nfs4/backups  none   bind   0   0" | sudo tee -a /etc/fstab
 echo "/var/www     /srv/nfs4/www      none   bind   0   0" | sudo tee -a /etc/fstab
 
-# Exporting the directories
-export host(options)
-
 # Exportfs
 third=$(hostname -I | cut -d'.' -f3)
 ip_prefix="192.168.$third"
 
+# Prepare the lines with the correct IP part
+# Pagkuha sa ip_prefix run hostname -I for example ang result niya is 192.168.2.1 kuhaa ang 2 then ibutang as 192.168.2.0/24
 lines="/srv/nfs4         $ip_prefix.0/24(rw,sync,no_subtree_check,crossmnt,fsid=0)
 /srv/nfs4/backups $ip_prefix.0/24(ro,sync,no_subtree_check) $ip_prefix.3(rw,sync,no_subtree_check)
 /srv/nfs4/www     $ip_prefix.20(rw,sync,no_subtree_check)"
 
-echo "$lines" | sudo tee -a /etc/exports
+# Append the lines to the /etc/exports file if they don't already exist
+for line in "$lines"; do
+    grep -qxF "$line" /etc/exports || echo "$line" | sudo tee -a /etc/exports
+done
 
 sudo exportfs -ar
 sudo exportfs -v
@@ -60,13 +62,9 @@ sudo exportfs -v
 # Firewall
 sudo ufw allow from $ip_prefix.0/24 to any port nfs
 sudo ufw status
-echo "Done."
-
-
-
-
 
 # Web
-wget https://github.com/AlienWolfX/mifi_webui/blob/main/IT112.zip
-sudo mkdir -p /var/www/web
-sudo unzip IT112.zip -d /var/www/web
+# wget https://github.com/AlienWolfX/mifi_webui/blob/main/web.7z
+# sudo mkdir -p /var/www/web
+# sudo unzip IT112.zip -d /var/www/web
+echo "All done :)"
