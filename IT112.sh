@@ -60,7 +60,10 @@ sudo exportfs -ar
 sudo exportfs -v
 
 # Firewall
+sudo ufw enable
 sudo ufw allow from $ip_prefix.0/24 to any port nfs
+sudo ufw allow ssh/tcp
+sudo ufw allow http/tcp
 sudo ufw status
 
 # Web
